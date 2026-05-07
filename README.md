@@ -1,8 +1,8 @@
 # learn-ai-Lovenndme
 
-west2-online learn-AI homework.
+西二在线 AI 方向考核作业仓库。
 
-## Directory
+## 目录
 
 ```text
 foundation/
@@ -19,4 +19,4 @@ foundation/
       crawler.py
 ```
 
-Start from Foundation Task 0, then continue with Task 1, Task 2, and Task 3.
+当前从 Foundation Task 2 开始完成作业，已完成作业 1：福大教务通知爬虫。

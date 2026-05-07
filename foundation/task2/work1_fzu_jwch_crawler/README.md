@@ -1,57 +1,57 @@
-# Task 2 Work 1 - FZU Jwch Notice Crawler
+# Task 2 作业 1 - 福大教务通知爬虫
 
-This crawler collects teaching notices from the Fuzhou University Academic Affairs Office.
+本作业用于爬取福州大学教务处“教学通知”栏目。
 
-Target page:
+目标页面：
 
 <https://jwch.fzu.edu.cn/jxtz.htm>
 
-## What It Collects
+## 爬取内容
 
-- notice department
-- notice title
-- publish date
-- detail page URL
-- detail page HTML, saved locally
-- detail page text
-- attachment name
-- attachment download URL
-- attachment file ID
-- attachment download count from the Ajax endpoint
+- 通知人 / 发布部门
+- 通知标题
+- 发布日期
+- 详情页链接
+- 详情页 HTML，本地保存
+- 详情页正文文本
+- 附件名称
+- 附件下载链接
+- 附件 file id
+- 通过 Ajax 接口获取的附件下载次数
 
-The script writes two CSV files:
+脚本会生成两个 CSV 文件：
 
-- `data/notices.csv`: one row per notice
-- `data/attachments.csv`: one row per attachment
+- `data/notices.csv`：每行对应一条通知
+- `data/attachments.csv`：每行对应一个附件
 
-Generated data is ignored by Git. If the reviewer needs the CSV, run the script locally.
+生成的数据已加入 `.gitignore`，不会直接提交到 Git 仓库。如果需要查看 CSV，可以在本地运行脚本重新生成。
 
-Initial implementation assisted by Codex; make sure you understand each part before submitting.
+初始实现由 Codex 辅助完成；提交前需要确保自己理解代码每一部分的作用。
 
-## Run
+## 运行方式
 
 ```bash
 python3 crawler.py --limit 500
 ```
 
-For a quick test:
+快速测试：
 
 ```bash
 python3 crawler.py --limit 5 --delay 0
 ```
 
-To also download attachment files:
+如果还想把附件文件下载到本地：
 
 ```bash
 python3 crawler.py --limit 500 --download-attachments
 ```
 
-## Notes
+## 说明
 
-The download count is loaded dynamically on the page. The script calls the same endpoint used by the page:
+附件下载次数是在页面中动态加载的。脚本调用了页面实际使用的接口：
 
 ```text
 /system/resource/code/news/click/clicktimes.jsp
 ```
 
-This avoids using Selenium for the attachment count.
+因此不需要使用 Selenium 也可以获取附件下载次数。
