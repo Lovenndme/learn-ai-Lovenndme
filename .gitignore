@@ -10,4 +10,5 @@ env/
 *.jsonl
 *.log
 foundation/task2/work1_fzu_jwch_crawler/data/
+foundation/task2/work2_zhihu_selenium_crawler/data/
 foundation/task2/work3_ospp_project_crawler/data/
