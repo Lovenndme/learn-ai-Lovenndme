@@ -9,6 +9,11 @@ foundation/
   task2/
     work1_fzu_jwch_crawler/
       crawler.py
+    work3_ospp_project_crawler/
+      crawler.py
 ```
 
-当前从 Foundation Task 2 开始完成作业，已完成作业 1：福大教务通知爬虫。
+当前从 Foundation Task 2 开始完成作业：
+
+- 作业 1：福大教务通知爬虫
+- 作业 3：开源之夏项目接口爬虫
