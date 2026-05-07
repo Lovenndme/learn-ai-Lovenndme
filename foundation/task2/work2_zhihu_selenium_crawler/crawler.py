@@ -43,7 +43,7 @@ def clean_text(value: Any) -> str:
 def get_selenium_modules() -> tuple[Any, Any, Any, Any, Any, Any, Any]:
     try:
         from selenium import webdriver
-        from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+        from selenium.common.exceptions import TimeoutException
         from selenium.webdriver.common.by import By
         from selenium.webdriver.edge.options import Options as EdgeOptions
         from selenium.webdriver.support import expected_conditions as EC
@@ -54,10 +54,7 @@ def get_selenium_modules() -> tuple[Any, Any, Any, Any, Any, Any, Any]:
             "没有安装 Selenium。请先运行：python3 -m pip install -r requirements.txt"
         ) from error
 
-    return webdriver, By, ChromeOptions, EdgeOptions, WebDriverWait, EC, (
-        TimeoutException,
-        StaleElementReferenceException,
-    )
+    return webdriver, By, ChromeOptions, EdgeOptions, WebDriverWait, EC, TimeoutException
 
 
 def create_driver(args: argparse.Namespace) -> Any:
@@ -83,8 +80,7 @@ def create_driver(args: argparse.Namespace) -> Any:
 
 
 def wait_for_body(driver: Any, timeout: int = 20) -> None:
-    _, By, _, _, WebDriverWait, EC, exceptions = get_selenium_modules()
-    TimeoutException, _ = exceptions
+    _, By, _, _, WebDriverWait, EC, TimeoutException = get_selenium_modules()
     try:
         WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
     except TimeoutException as error:
@@ -105,12 +101,12 @@ def wait_if_zhihu_limited(driver: Any, args: argparse.Namespace, context: str) -
     if not is_zhihu_limited(driver):
         return False
 
-    print(f"{context} 检测到知乎临时限制访问。")
-    print("请先停止高频操作，等待页面恢复；如果页面提示手机摇一摇或反馈，就按知乎页面提示处理。")
+    print(f"{context} 被知乎临时限制访问。")
+    print("先停一会儿，按页面提示处理后再继续。")
 
     if not args.auto_wait_on_limit and not args.headless:
         try:
-            input("等页面恢复正常后，回到终端按 Enter 继续；如果不想等，可以按 Ctrl+C 停止：")
+            input("页面恢复后按 Enter 继续，或按 Ctrl+C 停止：")
         except EOFError:
             time.sleep(args.limit_wait)
         wait_for_body(driver)
@@ -118,7 +114,7 @@ def wait_if_zhihu_limited(driver: Any, args: argparse.Namespace, context: str) -
             return False
 
     for retry_index in range(args.limit_retry):
-        print(f"仍然被限制，等待 {args.limit_wait} 秒后刷新重试 {retry_index + 1}/{args.limit_retry}")
+        print(f"仍被限制，等待 {args.limit_wait} 秒后重试 {retry_index + 1}/{args.limit_retry}")
         time.sleep(args.limit_wait)
         driver.refresh()
         wait_for_body(driver)
