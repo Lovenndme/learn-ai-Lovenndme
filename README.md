@@ -13,6 +13,8 @@ foundation/
       crawler.py
     work3_ospp_project_crawler/
       crawler.py
+    work4_open_meteo_weather/
+      crawler.py
 ```
 
 当前从 Foundation Task 2 开始完成作业：
@@ -20,3 +22,4 @@ foundation/
 - 作业 1：福大教务通知爬虫
 - 作业 2：知乎话题 Selenium 爬虫
 - 作业 3：开源之夏项目接口爬虫
+- 作业 4：Open-Meteo 天气数据
