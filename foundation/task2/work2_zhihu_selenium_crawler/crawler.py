@@ -127,7 +127,11 @@ def collect_question_links(driver: Any, args: argparse.Namespace) -> list[Questi
     """
 
     for scroll_index in range(args.topic_scroll_times):
-        items = driver.execute_script(script)
+        items = driver.execute_script(script) or []
+        if not isinstance(items, list):
+            print(f"话题页脚本返回异常类型：{type(items).__name__}，本次滚动先跳过")
+            items = []
+
         for item in items:
             href = clean_text(item.get("href"))
             match = QUESTION_RE.search(href)
@@ -150,7 +154,10 @@ def collect_question_links(driver: Any, args: argparse.Namespace) -> list[Questi
             if len(questions) >= args.question_limit:
                 break
 
-        print(f"话题页滚动 {scroll_index + 1}/{args.topic_scroll_times}，已发现 {len(questions)} 个问题")
+        print(
+            f"话题页滚动 {scroll_index + 1}/{args.topic_scroll_times}，"
+            f"本次候选链接 {len(items)} 个，已发现 {len(questions)} 个问题"
+        )
         if len(questions) >= args.question_limit:
             break
 
