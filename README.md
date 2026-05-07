@@ -1,6 +1,6 @@
 # learn-ai-Lovenndme
 
-西二在线 AI 方向考核作业仓库。
+西二在线 AI 方向考核作业。
 
 ## 目录
 
@@ -17,7 +17,7 @@ foundation/
       crawler.py
 ```
 
-当前从 Foundation Task 2 开始完成作业：
+当前进度：
 
 - 作业 1：福大教务通知爬虫
 - 作业 2：知乎话题 Selenium 爬虫
