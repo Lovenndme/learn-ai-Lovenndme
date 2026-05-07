@@ -13,6 +13,7 @@ from typing import Any
 
 DEFAULT_TOPIC_URL = "https://www.zhihu.com/topic/19554298/top-answers"
 QUESTION_RE = re.compile(r"https?://(?:www\.)?zhihu\.com/question/(\d+)")
+ZHIHU_LIMIT_KEYWORDS = ("您当前请求存在异常", "暂时限制本次访问", "40362")
 
 CSV_COLUMNS = [
     "question_index",
@@ -88,6 +89,45 @@ def wait_for_body(driver: Any, timeout: int = 20) -> None:
         WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
     except TimeoutException as error:
         raise RuntimeError("页面加载超时，请检查网络或浏览器状态") from error
+
+
+def get_body_text(driver: Any) -> str:
+    text = driver.execute_script("return document.body ? document.body.innerText : ''") or ""
+    return clean_text(text)
+
+
+def is_zhihu_limited(driver: Any) -> bool:
+    body_text = get_body_text(driver)
+    return any(keyword in body_text for keyword in ZHIHU_LIMIT_KEYWORDS)
+
+
+def wait_if_zhihu_limited(driver: Any, args: argparse.Namespace, context: str) -> bool:
+    if not is_zhihu_limited(driver):
+        return False
+
+    print(f"{context} 检测到知乎临时限制访问。")
+    print("请先停止高频操作，等待页面恢复；如果页面提示手机摇一摇或反馈，就按知乎页面提示处理。")
+
+    if not args.auto_wait_on_limit and not args.headless:
+        try:
+            input("等页面恢复正常后，回到终端按 Enter 继续；如果不想等，可以按 Ctrl+C 停止：")
+        except EOFError:
+            time.sleep(args.limit_wait)
+        wait_for_body(driver)
+        if not is_zhihu_limited(driver):
+            return False
+
+    for retry_index in range(args.limit_retry):
+        print(f"仍然被限制，等待 {args.limit_wait} 秒后刷新重试 {retry_index + 1}/{args.limit_retry}")
+        time.sleep(args.limit_wait)
+        driver.refresh()
+        wait_for_body(driver)
+        if not is_zhihu_limited(driver):
+            print("页面已恢复，继续爬取。")
+            return False
+
+    print("知乎仍在限制本次访问，本页先跳过。")
+    return True
 
 
 def pause_for_login(driver: Any, args: argparse.Namespace) -> None:
@@ -246,7 +286,10 @@ def extract_answers(driver: Any) -> list[dict[str, str]]:
     }
     return answers;
     """
-    rows = driver.execute_script(script)
+    rows = driver.execute_script(script) or []
+    if not isinstance(rows, list):
+        return []
+
     answers: list[dict[str, str]] = []
     seen: set[str] = set()
     for row in rows:
@@ -268,6 +311,9 @@ def collect_answers_for_question(driver: Any, question: QuestionLink, args: argp
     answers: list[dict[str, str]] = []
 
     for scroll_index in range(args.answer_scroll_times):
+        if wait_if_zhihu_limited(driver, args, f"问题 {question.question_id} 的回答页"):
+            break
+
         expand_visible_content(driver)
         answers = extract_answers(driver)
         print(
@@ -311,6 +357,8 @@ def crawl(args: argparse.Namespace) -> list[dict[str, str]]:
             driver.get(question.url)
             wait_for_body(driver)
             time.sleep(args.delay)
+            if wait_if_zhihu_limited(driver, args, f"问题 {question_index}/{len(questions)}"):
+                continue
 
             title, detail = extract_question_info(driver, question.title)
             answers = collect_answers_for_question(driver, question, args)
@@ -340,7 +388,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--answer-limit", type=int, default=10, help="每个问题最多爬取多少条回答")
     parser.add_argument("--topic-scroll-times", type=int, default=30, help="话题页最多滚动次数")
     parser.add_argument("--answer-scroll-times", type=int, default=20, help="每个问题页最多滚动次数")
-    parser.add_argument("--delay", type=float, default=1.5, help="滚动和请求之间的等待秒数")
+    parser.add_argument("--delay", type=float, default=4.0, help="滚动和请求之间的等待秒数")
     parser.add_argument("--output-dir", default="data", help="输出目录")
     parser.add_argument("--profile-dir", default="", help="浏览器用户数据目录，用于保存登录状态")
     parser.add_argument("--browser", choices=["chrome", "edge"], default="chrome", help="使用的浏览器")
@@ -348,6 +396,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--login-wait", type=int, default=30, help="跳过登录提示时等待的秒数")
     parser.add_argument("--skip-login-prompt", action="store_true", help="不等待手动按 Enter，直接等待一段时间后开始")
     parser.add_argument("--keep-browser-open", action="store_true", help="运行结束后不自动关闭浏览器")
+    parser.add_argument("--limit-wait", type=int, default=180, help="检测到知乎限制访问后，每次等待多少秒")
+    parser.add_argument("--limit-retry", type=int, default=2, help="检测到知乎限制访问后，最多刷新重试几次")
+    parser.add_argument("--auto-wait-on-limit", action="store_true", help="检测到限制访问后自动等待，不要求手动按 Enter")
     return parser.parse_args()
 
 

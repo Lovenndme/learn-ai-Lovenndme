@@ -64,6 +64,12 @@ python3 crawler.py
 python3 crawler.py --question-limit 2 --answer-limit 2
 ```
 
+知乎如果提示“您当前请求存在异常”或 `40362`，说明本次访问被知乎临时限制了。脚本会暂停并提示等待页面恢复。建议先停一会儿，再用更小的数量和更慢的速度测试：
+
+```bash
+python3 crawler.py --question-limit 2 --answer-limit 2 --delay 8
+```
+
 如果已经登录过，并且想复用登录状态：
 
 ```bash
@@ -74,10 +80,12 @@ python3 crawler.py --skip-login-prompt
 
 - `--question-limit 20`：最多爬取多少个问题
 - `--answer-limit 10`：每个问题最多爬取多少条回答
-- `--delay 1.5`：滚动之间等待多久，网络慢可以调大
+- `--delay 4.0`：滚动之间等待多久，网络慢或被限制时可以调大
 - `--browser chrome`：使用 Chrome
 - `--browser edge`：使用 Edge
 - `--profile-dir data/browser_profile`：指定浏览器登录状态保存目录
+- `--limit-wait 180`：检测到知乎临时限制后等待多久再重试
+- `--auto-wait-on-limit`：检测到限制后自动等待，不要求手动按 Enter
 
 ## 注意
 
