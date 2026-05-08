@@ -1,32 +1,30 @@
 # 作业 4：凯瑟琳不想发委托
 
-## 任务目标
+## 我做了什么
 
-构建一个至少包含 3 个节点的 AI 工作流，将一封啰嗦、带有情绪表达的求助信转换成标准委托广告。
+这题是把一封啰嗦的求助信整理成委托广告。我没有直接让模型一步写完，而是拆成了三步：
 
-本实现的 pipeline：
-
-1. 信息净化与提取：删除抱怨、寒暄和情绪表达，只保留客观事实。
-2. 结构化处理：把客观事实转换成 JSON。
-3. 文案包装：把结构化 JSON 改写为冒险家协会招募广告。
+1. 先把原文里的抱怨和寒暄删掉，只留事实。
+2. 再把事实整理成 JSON。
+3. 最后根据 JSON 写成冒险家协会的招募广告。
 
 ## 运行方式
 
-先设置智谱 API Key：
+先设置 API Key：
 
 ```bash
 export ZHIPUAI_API_KEY="你的 API Key"
 export GLM_MODEL="glm-5.1"
 ```
 
-运行真实 GLM 工作流：
+运行：
 
 ```bash
 cd application/application1
 python3 work4_ai_workflow/commission_workflow.py --save-output
 ```
 
-没有 API Key 时可以运行 mock：
+没有 API Key 时可以先跑 mock：
 
 ```bash
 python3 work4_ai_workflow/commission_workflow.py --mock --save-output
@@ -34,7 +32,7 @@ python3 work4_ai_workflow/commission_workflow.py --mock --save-output
 
 ## 错误处理
 
-节点 2 会把模型输出交给 `json.loads` 解析，并校验字段结构：
+节点 2 是这个脚本里最容易出问题的一步，所以我加了字段校验。模型输出会先交给 `json.loads` 解析，再检查这些字段：
 
 - `client`：字符串
 - `location`：字符串
@@ -42,22 +40,22 @@ python3 work4_ai_workflow/commission_workflow.py --mock --save-output
 - `reward`：字符串
 - `deadline`：字符串
 
-如果模型输出不是合法 JSON，或字段不符合要求，程序会把错误内容和 schema 要求重新交给 GLM，让它只输出修复后的合法 JSON。
+如果模型输出不是合法 JSON，或者字段缺了、类型不对，程序会把错误内容和字段要求重新发给 GLM，让它再修一次。
 
 ## 输出文件
 
-运行结果保存到：
+结果保存在：
 
 - `output/commission_workflow_result.json`
 
-文件中包含：
+里面包含：
 
 - 原始求助信
 - 节点 1 的净化文本
 - 节点 2 的结构化 JSON
 - 节点 3 的招募广告
 
-## 真实运行记录
+## 运行结果
 
 节点 1：信息净化
 
@@ -98,4 +96,4 @@ python3 work4_ai_workflow/commission_workflow.py --mock --save-output
 
 ## 小结
 
-这个脚本把 AI 调用拆成了三个职责清晰的节点，而不是把所有逻辑写在主函数里。节点 2 的 JSON 校验和修复逻辑保证了后续节点能拿到结构化数据，也展示了 AI 工作流中常见的“模型输出 + 程序校验 + 失败修复”的处理方式。
+拆成三步之后，流程比直接一口气生成广告更好控制。尤其是中间有 JSON 这一层，后面要改广告格式或者接别的程序会方便一些。节点 2 的校验和修复主要是防止模型偶尔输出不合法 JSON。

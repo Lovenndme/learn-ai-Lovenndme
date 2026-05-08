@@ -1,25 +1,26 @@
 # Application 1 简单 AI 应用
 
-## 文件
+## 目录
 
-- `work1_model_test/report.md`：模型能力测试记录
-- `work2_sentiment_glm/sentiment_demo.py`：调用 GLM 做情绪分类
-- `work2_sentiment_glm/README.md`：情绪分类提示词设计和运行记录
-- `work3_json_glm/json_tasks.py`：JSON 生成、解析和校验
-- `work3_json_glm/README.md`：JSON 分块生成、错误处理和运行记录
-- `work4_ai_workflow/commission_workflow.py`：三节点 AI 工作流
-- `work4_ai_workflow/README.md`：AI 工作流设计和运行记录
-- `common/glm_client.py`：GLM API 简单封装
+- `work1_model_test/`：DeepSeek 测试记录和观察
+- `work2_sentiment_glm/`：用 GLM 做文本/图片情绪分类
+- `work3_json_glm/`：让 GLM 生成、修复和解析 JSON
+- `work4_ai_workflow/`：把求助信整理成委托广告的三步工作流
+- `common/glm_client.py`：几个作业共用的 GLM 请求封装
 
 ## 准备
 
-需要在智谱开放平台申请 API Key，然后在终端设置环境变量：
+代码里没有写 API Key。运行前需要自己在终端里设置：
 
 ```bash
 export ZHIPUAI_API_KEY="你的 key"
 ```
 
-不要把 API Key 写进代码，也不要提交 `.env` 文件。
+也可以用 `GLM_MODEL` 指定模型，例如：
+
+```bash
+export GLM_MODEL="glm-5.1"
+```
 
 ## 运行
 
@@ -30,7 +31,7 @@ python3 work3_json_glm/json_tasks.py
 python3 work4_ai_workflow/commission_workflow.py
 ```
 
-如果还没申请 key，可以先加 `--mock` 看脚本流程：
+没有 key 或者只是想看流程，可以先跑 mock：
 
 ```bash
 python3 work2_sentiment_glm/sentiment_demo.py --mock
