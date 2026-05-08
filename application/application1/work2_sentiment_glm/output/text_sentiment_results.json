@@ -1,0 +1,22 @@
+[
+  {
+    "input": "今天项目终于跑通了，太爽了！",
+    "label": "开心",
+    "meme": "happy_02.png"
+  },
+  {
+    "input": "复习了一整天还是不会，感觉有点崩溃。",
+    "label": "难过",
+    "meme": "sad_01.png"
+  },
+  {
+    "input": "这个 bug 卡我三个小时，真的很烦。",
+    "label": "愤怒",
+    "meme": "angry_01.png"
+  },
+  {
+    "input": "我下午去图书馆还书。",
+    "label": "中性",
+    "meme": "normal_02.png"
+  }
+]

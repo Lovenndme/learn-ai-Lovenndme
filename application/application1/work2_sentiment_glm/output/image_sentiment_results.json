@@ -1,0 +1,26 @@
+[
+  {
+    "image": "work2_sentiment_glm/input_images/angry.png",
+    "model": "glm-5v-turbo",
+    "label": "愤怒",
+    "meme": "angry_01.png"
+  },
+  {
+    "image": "work2_sentiment_glm/input_images/happy.png",
+    "model": "glm-5v-turbo",
+    "label": "开心",
+    "meme": "happy_02.png"
+  },
+  {
+    "image": "work2_sentiment_glm/input_images/sad_1.png",
+    "model": "glm-5v-turbo",
+    "label": "难过",
+    "meme": "sad_01.png"
+  },
+  {
+    "image": "work2_sentiment_glm/input_images/sad_2.png",
+    "model": "glm-5v-turbo",
+    "label": "难过",
+    "meme": "sad_01.png"
+  }
+]

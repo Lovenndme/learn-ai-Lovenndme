@@ -15,4 +15,14 @@ foundation/
       crawler.py
     work4_open_meteo_weather/
       crawler.py
+application/
+  application1/
+    work1_model_test/
+      report.md
+    work2_sentiment_glm/
+      sentiment_demo.py
+    work3_json_glm/
+      json_tasks.py
+    work4_ai_workflow/
+      commission_workflow.py
 ```

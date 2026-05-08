@@ -1,0 +1,20 @@
+{
+  "name": "艾莉丝·星陨",
+  "element": "虚空",
+  "hobbies": [
+    "星象观测",
+    "古代符文解析",
+    "量子跃迁棋",
+    "收集暗物质结晶"
+  ],
+  "kibot_partner": {
+    "species": "灵能机械狐",
+    "color": "#8A2BE2",
+    "bond_level": 97,
+    "coordinates": [
+      -142.88,
+      45.33
+    ],
+    "is_friendly": true
+  }
+}

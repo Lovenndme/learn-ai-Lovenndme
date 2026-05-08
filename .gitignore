@@ -3,11 +3,14 @@ __pycache__/
 .DS_Store
 .vscode/
 .idea/
+.env
+.env.*
 .venv/
 venv/
 env/
 *.csv
 *.jsonl
+!application/**/*.jsonl
 *.log
 foundation/task2/work1_fzu_jwch_crawler/data/
 foundation/task2/work2_zhihu_selenium_crawler/data/
